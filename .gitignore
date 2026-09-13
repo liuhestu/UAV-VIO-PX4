@@ -1,0 +1,27 @@
+# Local editor and Python environments
+.vscode/
+.venv*/
+__pycache__/
+*.py[cod]
+
+# Machine-local GeographicLib data
+.geographiclib/
+
+# ROS 2 / colcon generated output
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# Runtime captures and large generated artifacts
+*.bag
+*.bag.active
+*.db3
+*.mcap
+*.ulg
+*.pcap
+*.log
+
+# Common local files
+.DS_Store
+*~
+*.swp
