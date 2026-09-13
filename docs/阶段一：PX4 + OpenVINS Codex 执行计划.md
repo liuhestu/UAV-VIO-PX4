@@ -60,14 +60,14 @@ EuRoC ROS 2 bag
 | 已 source 的额外工作区 | `/home/he/hno_vio_ws/install/hno_vio` | 构建本项目时避免继承，使用干净 shell |
 | MAVROS2 | 已安装 `mavros`、`mavros_extras`、`mavros_msgs` | 2.14.0，已实机连通 |
 | GeographicLib | 工作区本地 `egm96-5` 数据集 | 由 `GEOGRAPHICLIB_DATA` 指向，不需要 root |
-| OpenVINS | 已克隆至 `ros2_ws/src/open_vins` | commit `69488123ed9362dd44b6f28e7f4680abbff1442b` |
-| PX4 源码 | 已克隆至 `PX4-Autopilot` | v1.17.0 / `d6f12ad1c4`，仅核对，未编译/刷写 |
+| OpenVINS | 已克隆至 `src/open_vins` | commit `69488123ed9362dd44b6f28e7f4680abbff1442b` |
+| PX4 源码 | 已克隆至 `src/px4_autopilot` | v1.17.0 / `d6f12ad1c4`，仅核对，未编译/刷写 |
 | 飞控 USB | USB ID `26ac:0032 3D Robotics PX4 FMU v5.x` | 已识别 |
 | 串口 | `/dev/ttyACM1` | 不硬编码编号 |
 | 稳定串口路径 | `/dev/serial/by-id/usb-3D_Robotics_PX4_FMU_v5.x_0-if00` | MAVROS 首选 |
 | 串口权限 | 用户 `he` 已属于 `dialout`，设备属组为 `dialout` | 可用，无需 `chmod 777` |
 | 飞控固件 | AUTOPILOT_VERSION 实测 PX4 v1.17.0 / `d6f12ad1c4` | 与本地源码一致 |
-| 项目根目录 | `/home/he/uav_vio_px4`，当前不是 Git 仓库 | 不影响本阶段；报告中说明 |
+| 项目根目录 | `/home/he/uav_vio_px4`，Git 仓库 | ROS 2 工作空间根目录 |
 | 可用磁盘 | 约 741 GiB | 足够 |
 
 ### 1.1 EuRoC V1_01_easy 实测
@@ -156,15 +156,15 @@ listener vehicle_visual_odometry
 
 ```text
 /home/he/uav_vio_px4/
-├── ros2_ws/
-│   └── src/
-│       ├── open_vins/
-│       └── estimator_adapter/
-├── PX4-Autopilot/              # 只读源码核对，不编译/刷写
-├── config/
+├── src/
+│   ├── open_vins/              # ROS 2 packages，参与 colcon build
+│   ├── estimator_adapter/      # 自有 ROS 2 package，参与 colcon build
+│   └── px4_autopilot/          # PX4 v1.17.0 参考源码，不参与 colcon
+├── build/                      # colcon 生成
+├── install/                    # colcon 生成
+├── log/                        # colcon 生成
 ├── scripts/
-├── logs/
-└── PX4 + OpenVINS 第一阶段 Codex 执行计划.md
+└── docs/
 ```
 
 数据集保持在：
@@ -184,8 +184,8 @@ listener vehicle_visual_odometry
 确认执行后克隆官方仓库，立即记录：
 
 ```bash
-git -C /home/he/uav_vio_px4/ros2_ws/src/open_vins rev-parse HEAD
-git -C /home/he/uav_vio_px4/ros2_ws/src/open_vins status --short --branch
+git -C /home/he/uav_vio_px4/src/open_vins rev-parse HEAD
+git -C /home/he/uav_vio_px4/src/open_vins status --short --branch
 ```
 
 重点核对当前 commit 中：
@@ -194,7 +194,7 @@ git -C /home/he/uav_vio_px4/ros2_ws/src/open_vins status --short --branch
 ov_msckf/launch/subscribe.launch.py
 ov_msckf/src/ros/ROS2Visualizer.cpp
 ov_msckf/src/ros/ROS2Visualizer.h
-config/euroc_mav/
+src/open_vins/config/euroc_mav/
 ```
 
 已通过官方当前源码预核对：
@@ -320,11 +320,11 @@ Gate 1 通过条件：三个 topic 都持续发布、双目时间序列存在、
 构建：
 
 ```bash
-cd /home/he/uav_vio_px4/ros2_ws
+cd /home/he/uav_vio_px4
 source /opt/ros/humble/setup.bash
-rosdep check --from-paths src --ignore-src
+rosdep check --from-paths src/open_vins src/estimator_adapter --ignore-src
 # 缺失项确认后再执行 rosdep install
-colcon build --symlink-install
+colcon build --symlink-install --base-paths src/open_vins src/estimator_adapter
 source install/setup.bash
 ```
 
@@ -365,15 +365,15 @@ Gate 2 通过条件：`/ov_msckf/odomimu` 连续有效输出，不要求此时�
 ### 9.1 包结构
 
 ```text
-ros2_ws/src/estimator_adapter/
+src/estimator_adapter/
 ├── CMakeLists.txt
 ├── package.xml
-├── include/estimator_adapter/estimator_adapter.hpp
-├── src/estimator_adapter.cpp
+├── include/estimator_adapter/adapter_core.hpp
+├── src/adapter_core.cpp
 ├── src/estimator_adapter_node.cpp
-├── config/estimator_adapter.yaml
-├── launch/estimator_adapter.launch.py
-└── test/
+├── config/{extrinsics,phase1,phase2}.yaml
+├── launch/{phase1,phase2}.launch.py
+└── test/test_adapter_core.cpp
 ```
 
 ### 9.2 输入与输出

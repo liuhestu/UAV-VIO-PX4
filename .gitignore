@@ -8,9 +8,9 @@ __pycache__/
 .geographiclib/
 
 # ROS 2 / colcon generated output
-ros2_ws/build/
-ros2_ws/install/
-ros2_ws/log/
+build/
+install/
+log/
 
 # Runtime captures and large generated artifacts
 *.bag

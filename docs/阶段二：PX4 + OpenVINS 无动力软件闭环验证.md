@@ -7,14 +7,14 @@
 
 目标是证明 OpenVINS 的 XY/Z position 经 MAVROS 进入 PX4 EKF2，并由主 EKF 实例反映到 `vehicle_local_position`；随后证明已启用的 `mc_pos_control` 消费 XYZ 状态并处于 landed/DISARM 安全输出状态。
 
-本阶段不融合 external-vision velocity 或 yaw，不更换主高度参考，不证明悬停稳定性、控制误差收敛或可飞性。`PX4-Autopilot/` 只用于源码核对，不参与编译或刷写。
+本阶段不融合 external-vision velocity 或 yaw，不更换主高度参考，不证明悬停稳定性、控制误差收敛或可飞性。`src/px4_autopilot/` 只用于源码核对，不参与编译或刷写。
 
 ## 2. Adapter 坐标与外参契约
 
 - `V`：OpenVINS `/ov_msckf/odomimu` 的 RealSense IMU frame。
 - `P`：以 Pixhawk IMU 为原点的 ROS FLU frame。
 - `W`：OpenVINS global/odom frame。
-- \(T_{PV}\) 将 V 中的向量分量变换到 P；配置位于 `config/extrinsics.yaml`，phase1/phase2 launch 共用该文件。
+- \(T_{PV}\) 将 V 中的向量分量变换到 P；配置位于 `src/estimator_adapter/config/extrinsics.yaml`，phase1/phase2 launch 共用该文件。
 
 ```text
 x^P = R_PV x^V + t_PV

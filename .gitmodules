@@ -1,6 +1,6 @@
-[submodule "PX4-Autopilot"]
-	path = PX4-Autopilot
+[submodule "px4_autopilot"]
+	path = src/px4_autopilot
 	url = https://github.com/PX4/PX4-Autopilot.git
-[submodule "ros2_ws/src/open_vins"]
-	path = ros2_ws/src/open_vins
+[submodule "open_vins"]
+	path = src/open_vins
 	url = https://github.com/rpng/open_vins.git

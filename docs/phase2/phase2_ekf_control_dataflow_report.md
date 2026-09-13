@@ -6,7 +6,7 @@
 ## 当前软件结果
 
 - Adapter 实现 `T_WP = T_WV inverse(T_PV)`，输出 `odom → base_link`；`base_link` 原点是 Pixhawk IMU。
-- phase1 与 phase2 共用 `config/extrinsics.yaml`。当前外参是未标定单位 SE(3)，不可用于飞行。
+- phase1 与 phase2 共用 `src/estimator_adapter/config/extrinsics.yaml`。当前外参是未标定单位 SE(3)，不可用于飞行。
 - phase1/phase2 均为 `send_velocity=false`；linear/angular velocity 及 twist covariance 均为 NaN/unavailable。
 - 外参数组长度、有限性和四元数范数在启动时校验；xyzw 四元数归一化后使用，运行时修改被拒绝。
 - pose covariance 当前原样透传；未实现非单位外参的完整 covariance 变换。
