@@ -142,9 +142,19 @@ bool adapt_odometry(
   q_wv.normalize();
 
   const auto & q_xyzw = config.rotation_pv_xyzw;
+  if (!std::all_of(config.translation_pv_m.begin(), config.translation_pv_m.end(), finite) ||
+    !std::all_of(q_xyzw.begin(), q_xyzw.end(), finite))
+  {
+    if (error) {*error = "configured extrinsic contains a non-finite value";}
+    return false;
+  }
   Eigen::Quaterniond q_pv(q_xyzw[3], q_xyzw[0], q_xyzw[1], q_xyzw[2]);
   if (!finite(q_pv.norm()) || q_pv.norm() < config.minimum_quaternion_norm) {
     if (error) {*error = "configured extrinsic quaternion norm is invalid";}
+    return false;
+  }
+  if (std::abs(q_pv.norm() - 1.0) > kExtrinsicQuaternionNormTolerance) {
+    if (error) {*error = "configured extrinsic quaternion norm is abnormal";}
     return false;
   }
   q_pv.normalize();

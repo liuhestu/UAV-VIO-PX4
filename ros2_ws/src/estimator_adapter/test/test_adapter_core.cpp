@@ -159,6 +159,23 @@ TEST(AdapterCore, RejectsInvalidExtrinsicArrays)
     {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 2.0}, &config, &error));
 }
 
+TEST(AdapterCore, RejectsInvalidExtrinsicStoredDirectlyInConfig)
+{
+  const auto input = valid_input();
+  estimator_adapter::AdapterConfig config;
+  config.rotation_pv_xyzw = {{0.0, 0.0, 0.0, 2.0}};
+  rclcpp::Time last(0, 0, RCL_SYSTEM_TIME);
+  nav_msgs::msg::Odometry output;
+  std::string error;
+  EXPECT_FALSE(estimator_adapter::adapt_odometry(
+    input, rclcpp::Time(20, 0, RCL_SYSTEM_TIME), config, &last, &output, &error));
+
+  config.rotation_pv_xyzw = {{0.0, 0.0, 0.0, 1.0}};
+  config.translation_pv_m[0] = std::numeric_limits<double>::infinity();
+  EXPECT_FALSE(estimator_adapter::adapt_odometry(
+    input, rclcpp::Time(20, 0, RCL_SYSTEM_TIME), config, &last, &output, &error));
+}
+
 TEST(AdapterCore, EnforcesMonotonicReplayTimestamp)
 {
   const auto input = valid_input();

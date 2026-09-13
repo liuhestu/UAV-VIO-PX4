@@ -21,8 +21,8 @@ def generate_launch_description():
                 os.path.join(share_dir, "config", "phase2.yaml"),
                 os.path.join(share_dir, "config", "extrinsics.yaml"),
                 {
-                "output_enabled": LaunchConfiguration("output_enabled"),
-                "replay_mode": LaunchConfiguration("replay_mode"),
+                    "output_enabled": LaunchConfiguration("output_enabled"),
+                    "replay_mode": LaunchConfiguration("replay_mode"),
                 },
             ],
         ),

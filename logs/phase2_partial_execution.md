@@ -1,4 +1,6 @@
-# 阶段二部分执行记录
+# 阶段二部分执行记录（历史归档）
+
+> 本文件只记录 2026-09-12 的旧 XY/velocity 试验，不是当前 Phase3D 的验收报告。当前方案使用 `send_velocity=false`、`EKF2_EV_CTRL=3` 并分别验证 XY 与 Z；历史 velocity 与 covariance 结果已移出验收依据。当前状态见 `phase2/phase2_ekf_control_dataflow_report.md`。
 
 日期：2026-09-13（Asia/Shanghai）
 
