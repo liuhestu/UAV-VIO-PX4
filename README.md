@@ -1,6 +1,13 @@
-OpenVINS 输出 RealSense IMU 的 3D 位姿，Adapter 用一个固定外参 TPVT_{PV} 把它转换成 Pixhawk IMU / PX4 控制所使用的位姿，再送给 PX4。
+OpenVINS 输出 RealSense Odom 的 3D 位姿，Adapter 用一个固定外参把它转换成 Pixhawk IMU / PX4 控制所使用的位姿，再送给 PX4 EKF 融合。
 
 ```bash
+硬件链路：
+Ubuntu ───── Micro-USB ───── Pixhawk
+
+```
+
+```bash
+数据链路：
 OpenVINS：Odom 6 DOF
   ↓
 estimator_adapter：外参变换，发布数据
